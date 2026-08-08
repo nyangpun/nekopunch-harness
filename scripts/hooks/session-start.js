@@ -30,6 +30,7 @@ function main() {
   if (cached) {
     console.log(`[harness] Using cached DAILY set for ${repoId}`);
     console.log(`[harness] DAILY: ${cached.daily.join(", ") || "(none)"}`);
+    printClaudeMdNotice(cached.claudeMdFiles);
     return;
   }
 
@@ -38,6 +39,17 @@ function main() {
   console.log(`[harness] DAILY: ${result.daily.join(", ") || "(none)"}`);
   console.log(`[harness] LIBRARY: ${result.library.join(", ") || "(none)"}`);
   console.log(`[harness] Cached at ${cachePath}`);
+  printClaudeMdNotice(result.claudeMdFiles);
+}
+
+// Older cache entries (written before claudeMdFiles was tracked) won't have
+// this field — treat as "unknown", not "none", and stay quiet rather than
+// printing a false "no CLAUDE.md found".
+function printClaudeMdNotice(claudeMdFiles) {
+  if (!claudeMdFiles || claudeMdFiles.length === 0) return;
+  console.log(
+    `[harness] Found repo-native CLAUDE.md: ${claudeMdFiles.join(", ")} — prefer its conventions over generic SKILL.md content when the two disagree.`
+  );
 }
 
 main();

@@ -27,6 +27,16 @@ components with evidence from the actual codebase.
 - LIBRARY does not mean "delete"; it means "keep accessible without loading by default"
 - Do not install hooks, rules, or scripts that the current repo cannot use
 - Prefer harness-native surfaces; do not introduce a second install system
+- **Prefer repo-native docs over this harness's SKILL.md content.** If the
+  target repo has its own `CLAUDE.md` (at repo root or in a subpackage —
+  `session-start.js` surfaces these via the cache's `claudeMdFiles` field),
+  that document reflects the repo's actual, current conventions and
+  supersedes this harness's SKILL.md content wherever they disagree. A
+  SKILL.md here was written from a point-in-time read of the repo (or from
+  inference before the repo existed, as with FlowMat's original skills) and
+  can drift stale; a repo's own CLAUDE.md is maintained alongside the code it
+  describes. When they conflict, follow the repo's CLAUDE.md and flag the
+  SKILL.md as needing an update — don't silently pick the harness's version.
 
 ## Outputs
 
@@ -49,13 +59,21 @@ Two buckets only:
 
 ```bash
 rg --files
-cat package.json          # React/TS/Vite frontend
-cat build.gradle*         # Spring Boot backend (Gradle)
-cat pom.xml               # Spring Boot backend (Maven)
-rg -n "react-flow|zustand|@tanstack/react-query" package.json
-rg -n "org.springframework.boot" build.gradle* pom.xml
-rg -n "postgresql" build.gradle* pom.xml docker-compose*.yml
+find . -maxdepth 2 -iname CLAUDE.md         # check this FIRST — see Non-Negotiable Rules
+cat package.json */package.json             # React/TS/Vite frontend — repo root or 1-depth subpackage
+cat build.gradle* */build.gradle*           # Spring Boot backend (Gradle)
+cat pom.xml */pom.xml                       # Spring Boot backend (Maven)
+rg -n "react-flow|zustand|@tanstack/react-query" package.json */package.json
+rg -n "org.springframework.boot" build.gradle* pom.xml */build.gradle* */pom.xml
+rg -n "postgresql" build.gradle* pom.xml compose.y*ml docker-compose*.yml */compose.y*ml */docker-compose*.yml
 ```
+
+Monorepos/split repos (e.g. FlowMat's `flowmat_backend/` + `flowmat_frontend/`)
+keep their real stack files one level below repo root — always check 1-depth
+subpackages (`*_frontend`, `*_backend`, `frontend/`, `backend/`, `apps/*`),
+not just repo root. This is what `scripts/hooks/auto-agent-sort.js`'s
+`readIfExistsAnywhere` does automatically; do the same by hand when running
+this skill's workflow manually instead of via the hook.
 
 Stack → DAILY skill hints:
 
@@ -72,8 +90,12 @@ postgresql in compose/build files               -> sql-queries, db migration ski
 
 ### 1. Read the repo
 
-Languages, frameworks, package manager, test stack, lint/format stack,
-deployment surface, existing operator integrations.
+Check for a repo-native `CLAUDE.md` first (root and 1-depth subpackages) —
+if one exists, it's the priority source for conventions, not this skill's
+SKILL.md content (see Non-Negotiable Rules). Then read: languages,
+frameworks, package manager, test stack, lint/format stack, deployment
+surface, existing operator integrations — at repo root and in 1-depth
+subpackages for monorepos.
 
 ### 2. Build the evidence table
 
@@ -103,4 +125,7 @@ off-stack or only occasionally relevant.
 Write the evidence table + install plan to
 `hooks/memory-persistence/<repo-id>.json` (repo-id = repo folder name + a
 short hash of its lockfile) so `scripts/hooks/session-start.js` can skip
-re-classification on the next session unless the stack changed.
+re-classification on the next session unless the stack changed. Include
+`claudeMdFiles` (paths to any repo-native `CLAUDE.md` found) so
+`session-start.js` can print the "prefer repo docs" notice on every session,
+not just the first one.
