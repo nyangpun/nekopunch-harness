@@ -1,10 +1,17 @@
 {
+  "description": "Reference hook config in the schema Claude Code plugins use (${CLAUDE_PLUGIN_ROOT}). This harness is installed by symlink, not as a registered plugin, so this file is NOT read automatically — the actual registration for a symlink install lives in the user's ~/.claude/settings.json, written by scripts/install/register-session-start-hook.js (run by install.sh/install.ps1). Kept here as a correct-schema reference and for a future real plugin.json conversion, should that ever happen.",
   "hooks": {
     "SessionStart": [
       {
-        "type": "command",
-        "command": "node scripts/hooks/session-start.js",
-        "description": "Detect repo stack and load or build the DAILY skill set for this repo"
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/hooks/session-start.js\"",
+            "timeout": 30,
+            "description": "Detect repo stack and load or build the DAILY skill set for this repo"
+          }
+        ]
       }
     ]
   }

@@ -12,4 +12,6 @@ foreach ($dir in @("skills", "hooks", "rules", "commands", "agents", "mcp-config
     Write-Host "Linked $dir -> $linkPath"
 }
 
+node (Join-Path $HarnessDir "scripts\install\register-session-start-hook.js") $HarnessDir
+
 Write-Host "Installed my-harness at user level ($Target)."
