@@ -185,7 +185,7 @@ function runAgentSort(repoRoot, cachePath) {
   return result;
 }
 
-module.exports = { runAgentSort };
+module.exports = { runAgentSort, STACK_RULES };
 
 if (require.main === module) {
   const repoRoot = process.argv[2] || process.cwd();

@@ -1,0 +1,9 @@
+{
+  "_comment": "Reference config for exposing this harness's own tools (list_skills, read_skill, list_agents, find_relevant_workflows, run_harness_audit) as an MCP server. Opening this repo directly in Claude Code picks up ./.mcp.json automatically and needs no changes here. For Claude Desktop (or any other MCP host with its own config file), copy the 'my-harness' entry below into that host's config and replace <path-to-my-harness> with this repo's absolute path.",
+  "mcpServers": {
+    "my-harness": {
+      "command": "node",
+      "args": ["<path-to-my-harness>/mcp/server.js"]
+    }
+  }
+}

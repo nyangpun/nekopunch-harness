@@ -38,6 +38,29 @@ components with evidence from the actual codebase.
   describes. When they conflict, follow the repo's CLAUDE.md and flag the
   SKILL.md as needing an update — don't silently pick the harness's version.
 
+## Drift Check — dated status docs
+
+When a repo's own docs directory (e.g. FlowMat's `docs/nekopunch/`,
+`docs/seolly/`) contains multiple status/plan documents on the same topic
+with different dates in the filename (e.g. `collab_status_2026-07-22.md` and
+`collab_status_2026-07-23.md`), and the newer one states that it supersedes
+the older one (look for explicit language like "supersedes
+`collab_status_2026-07-22.md`" or "이 문서가 이전 버전을 대체한다"), treat
+that self-declaration as authoritative:
+
+- Read and cite only the newest superseding document.
+- Do not average, merge, or split the difference between the old and new
+  versions — the older one is superseded, not "still partially valid."
+- Still keep the older file in LIBRARY (searchable) rather than deleting it —
+  it's historical record, just not the current source of truth.
+- If a doc doesn't explicitly say it supersedes an earlier one but shares a
+  topic and has a later date, prefer the later date but flag the ambiguity
+  in the evidence table rather than silently picking one.
+
+This applies to any DAILY skill whose `origin:` frontmatter cites a
+repo-native doc for verification — when that doc gets superseded, the skill
+needs re-verification against the new one, not just a date bump.
+
 ## Outputs
 
 1. DAILY inventory

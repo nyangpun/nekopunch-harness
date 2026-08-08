@@ -5,6 +5,11 @@
   "description": "nekopunch's personal ECC-style engineering harness",
   "scripts": {
     "test": "node --test tests/",
-    "sort": "node scripts/hooks/auto-agent-sort.js"
+    "sort": "node scripts/hooks/auto-agent-sort.js",
+    "mcp": "node mcp/server.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "zod": "^4.4.3"
   }
 }
